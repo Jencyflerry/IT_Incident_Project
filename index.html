@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>IT Incident Priority Prediction</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: "Segoe UI", Arial, sans-serif;
+            background: linear-gradient(135deg, #0f172a, #1e3a8a);
+            min-height: 100vh;
+            padding: 35px 18px;
+            color: #1e293b;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: auto;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 28px;
+        }
+
+        .header .icon {
+            font-size: 42px;
+            margin-bottom: 10px;
+        }
+
+        .header h1 {
+            font-size: 31px;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            color: #cbd5e1;
+            line-height: 1.7;
+        }
+
+        .form-card {
+            background: white;
+            padding: 32px;
+            border-radius: 18px;
+            box-shadow: 0 20px 50px #00000035;
+        }
+
+        .section-title {
+            color: #1e3a8a;
+            font-size: 20px;
+            margin-bottom: 22px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 22px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        label {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 9px;
+            color: #334155;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 13px;
+            border: 1px solid #cbd5e1;
+            border-radius: 9px;
+            background: #f8fafc;
+            font-size: 14px;
+            font-family: inherit;
+            color: #1e293b;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px #2563eb20;
+            background: white;
+        }
+
+        .error {
+            background: #fef2f2;
+            border: 1px solid #fecaca;
+            color: #b91c1c;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+
+        .button-container {
+            margin-top: 30px;
+        }
+
+        button {
+            width: 100%;
+            padding: 15px;
+            border: none;
+            border-radius: 10px;
+            background: linear-gradient(135deg, #2563eb, #4f46e5);
+            color: white;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px #2563eb40;
+        }
+
+        .footer {
+            text-align: center;
+            color: #cbd5e1;
+            margin-top: 22px;
+            font-size: 12px;
+        }
+
+        @media (max-width: 600px) {
+            .header h1 {
+                font-size: 25px;
+            }
+
+            .form-card {
+                padding: 22px 17px;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+                gap: 18px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+<div class="container">
+
+    <header class="header">
+        <div class="icon">🛠️</div>
+        <h1>IT Incident Priority Prediction</h1>
+        <p>
+            Intelligent incident management powered by Machine Learning.
+            <br>
+            Enter incident details to predict the priority.
+        </p>
+    </header>
+
+    <main class="form-card">
+
+        <h2 class="section-title">Incident Information</h2>
+
+        {% if error %}
+        <div class="error">
+            <strong>Input Error:</strong> {{ error }}
+        </div>
+        {% endif %}
+
+        <form action="{{ url_for('predict') }}" method="POST">
+
+            <div class="form-grid">
+
+                <div class="form-group">
+                    <label for="Category">Category</label>
+                    <select id="Category" name="Category" required>
+                        <option value="Network">Network</option>
+                        <option value="Application">Application</option>
+                        <option value="Database">Database</option>
+                        <option value="Hardware">Hardware</option>
+                        <option value="Security">Security</option>
+                        <option value="Access">Access</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="Subcategory">Subcategory</label>
+                    <select id="Subcategory" name="Subcategory" required>
+                        <option value="Outage">Outage</option>
+                        <option value="High Latency">High Latency</option>
+                        <option value="Packet Loss">Packet Loss</option>
+                        <option value="Application Down">Application Down</option>
+                        <option value="Performance">Performance</option>
+                        <option value="UI Error">UI Error</option>
+                        <option value="Database Down">Database Down</option>
+                        <option value="Slow Query">Slow Query</option>
+                        <option value="Connection Error">Connection Error</option>
+                        <option value="Server Failure">Server Failure</option>
+                        <option value="Disk Failure">Disk Failure</option>
+                        <option value="Memory Issue">Memory Issue</option>
+                        <option value="Security Breach">Security Breach</option>
+                        <option value="Suspicious Login">Suspicious Login</option>
+                        <option value="Malware Alert">Malware Alert</option>
+                        <option value="Login Failure">Login Failure</option>
+                        <option value="Permission Issue">Permission Issue</option>
+                        <option value="Password Reset">Password Reset</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="Impact">Impact</label>
+                    <select id="Impact" name="Impact" required>
+                        <option value="High">High</option>
+                        <option value="Medium">Medium</option>
+                        <option value="Low">Low</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="Urgency">Urgency</label>
+                    <select id="Urgency" name="Urgency" required>
+                        <option value="High">High</option>
+                        <option value="Medium">Medium</option>
+                        <option value="Low">Low</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="Affected_Users">Affected Users</label>
+                    <input type="number"
+                           id="Affected_Users"
+                           name="Affected_Users"
+                           min="0"
+                           max="5000"
+                           placeholder="Enter number of users"
+                           required>
+                </div>
+
+                <div class="form-group">
+                    <label for="Service_Criticality">Service Criticality</label>
+                    <select id="Service_Criticality"
+                            name="Service_Criticality" required>
+                        <option value="Critical">Critical</option>
+                        <option value="High">High</option>
+                        <option value="Medium">Medium</option>
+                        <option value="Low">Low</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="Business_Hours">Business Hours</label>
+                    <select id="Business_Hours"
+                            name="Business_Hours" required>
+                        <option value="Yes">Yes</option>
+                        <option value="No">No</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="Customer_Impact">Customer Impact</label>
+                    <select id="Customer_Impact"
+                            name="Customer_Impact" required>
+                        <option value="Yes">Yes</option>
+                        <option value="No">No</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="Reopen_Count">Reopen Count</label>
+                    <input type="number"
+                           id="Reopen_Count"
+                           name="Reopen_Count"
+                           min="0"
+                           value="0"
+                           required>
+                </div>
+
+                <div class="form-group">
+                    <label for="Assignment_Group">Assignment Group</label>
+                    <select id="Assignment_Group"
+                            name="Assignment_Group" required>
+                        <option value="Network Team">Network Team</option>
+                        <option value="Application Team">Application Team</option>
+                        <option value="Database Team">Database Team</option>
+                        <option value="Infrastructure Team">Infrastructure Team</option>
+                        <option value="Security Team">Security Team</option>
+                        <option value="Service Desk">Service Desk</option>
+                    </select>
+                </div>
+
+            </div>
+
+            <div class="button-container">
+                <button type="submit">
+                    Predict Incident Priority →
+                </button>
+            </div>
+
+        </form>
+    </main>
+
+    <footer class="footer">
+        ITSM Analytics | Machine Learning Incident Management System
+    </footer>
+
+</div>
+</body>
+</html>
