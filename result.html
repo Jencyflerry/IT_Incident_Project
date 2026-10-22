@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Incident Prediction Result</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: "Segoe UI", Arial, sans-serif;
+            background: linear-gradient(135deg, #0f172a, #1e3a8a);
+            min-height: 100vh;
+            padding: 35px 18px;
+            color: #1e293b;
+        }
+
+        .container {
+            max-width: 950px;
+            margin: auto;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 28px;
+        }
+
+        .header .icon {
+            font-size: 42px;
+            margin-bottom: 10px;
+        }
+
+        .header h1 {
+            font-size: 30px;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            color: #cbd5e1;
+            line-height: 1.7;
+        }
+
+        .card {
+            background: white;
+            padding: 32px;
+            border-radius: 18px;
+            box-shadow: 0 20px 50px #00000035;
+        }
+
+        .section-title {
+            color: #1e3a8a;
+            font-size: 20px;
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        .prediction-box {
+            background: #eff6ff;
+            border: 1px solid #bfdbfe;
+            padding: 28px 18px;
+            text-align: center;
+            border-radius: 14px;
+            margin-bottom: 30px;
+        }
+
+        .prediction-label {
+            color: #475569;
+            font-size: 13px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            margin-bottom: 15px;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 12px 28px;
+            background: #2563eb;
+            color: white;
+            border-radius: 30px;
+            font-size: 24px;
+            font-weight: 700;
+            overflow-wrap: anywhere;
+        }
+
+        .critical {
+            background: #b91c1c;
+        }
+
+        .high {
+            background: #ea580c;
+        }
+
+        .medium {
+            background: #ca8a04;
+        }
+
+        .low {
+            background: #15803d;
+        }
+
+        .model-name {
+            margin-top: 16px;
+            font-size: 14px;
+            color: #475569;
+        }
+
+        .model-name strong {
+            color: #1e3a8a;
+        }
+
+        .details-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .detail {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            padding: 17px;
+            border-radius: 10px;
+            min-width: 0;
+        }
+
+        .detail-label {
+            display: block;
+            color: #64748b;
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+        }
+
+        .detail-value {
+            color: #1e293b;
+            font-size: 15px;
+            font-weight: 600;
+            overflow-wrap: anywhere;
+        }
+
+        .probability-card {
+            border: 1px solid #e2e8f0;
+            padding: 17px;
+            border-radius: 10px;
+            margin-bottom: 14px;
+        }
+
+        .probability-header {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+            margin-bottom: 12px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .probability-value {
+            color: #2563eb;
+        }
+
+        .progress {
+            background: #e2e8f0;
+            height: 9px;
+            border-radius: 20px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #2563eb, #6366f1);
+            border-radius: 20px;
+        }
+
+        .recommendation {
+            background: #f0fdf4;
+            border-left: 5px solid #16a34a;
+            padding: 20px;
+            border-radius: 9px;
+            margin-top: 28px;
+        }
+
+        .recommendation h3 {
+            color: #166534;
+            margin-bottom: 10px;
+            font-size: 17px;
+        }
+
+        .recommendation p {
+            color: #334155;
+            line-height: 1.8;
+            font-size: 14px;
+        }
+
+        .note {
+            font-size: 12px;
+            color: #64748b;
+            margin-top: 12px;
+            line-height: 1.6;
+        }
+
+        .buttons {
+            display: flex;
+            gap: 14px;
+            margin-top: 28px;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 15px;
+            border: none;
+            border-radius: 9px;
+            text-align: center;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            font-family: inherit;
+        }
+
+        .btn-primary {
+            color: white;
+            background: linear-gradient(135deg, #2563eb, #4f46e5);
+        }
+
+        .btn-secondary {
+            color: #1e293b;
+            background: #e2e8f0;
+        }
+
+        .footer {
+            text-align: center;
+            color: #cbd5e1;
+            font-size: 12px;
+            margin-top: 22px;
+        }
+
+        @media (max-width: 600px) {
+            .header h1 {
+                font-size: 25px;
+            }
+
+            .card {
+                padding: 22px 16px;
+            }
+
+            .details-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .buttons {
+                flex-direction: column;
+            }
+        }
+
+        @media print {
+            body {
+                background: white;
+                padding: 0;
+            }
+
+            .header {
+                color: #1e293b;
+            }
+
+            .header p,
+            .footer {
+                color: #64748b;
+            }
+
+            .card {
+                box-shadow: none;
+                border: 1px solid #ddd;
+            }
+
+            .buttons {
+                display: none;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <header class="header">
+        <div class="icon">📊</div>
+        <h1>Incident Prediction Result</h1>
+        <p>
+            Machine Learning Based Incident Management
+            <br>
+            Review the predicted priority and recommended action.
+        </p>
+    </header>
+
+    <main class="card">
+
+        <!-- Prediction -->
+        <h2 class="section-title">Prediction Summary</h2>
+
+        {% set p = priority | string | lower | trim %}
+
+        <div class="prediction-box">
+
+            <div class="prediction-label">
+                PREDICTED INCIDENT PRIORITY
+            </div>
+
+            <div class="badge
+                {% if p in ['critical', 'p1', 'priority 1'] %}critical
+                {% elif p in ['high', 'p2', 'priority 2'] %}high
+                {% elif p in ['medium', 'moderate', 'p3', 'priority 3'] %}medium
+                {% elif p in ['low', 'p4', 'priority 4'] %}low
+                {% endif %}">
+                {{ priority }}
+            </div>
+
+            <div class="model-name">
+                Selected ML Model:
+                <strong>{{ model_name }}</strong>
+            </div>
+
+        </div>
+
+        <!-- Submitted Incident Details -->
+        <h2 class="section-title">Incident Details</h2>
+
+        <div class="details-grid">
+
+            {% for field, value in incident.items() %}
+
+            <div class="detail">
+                <span class="detail-label">
+                    {{ field.replace('_', ' ') }}
+                </span>
+
+                <span class="detail-value">
+                    {{ value }}
+                </span>
+            </div>
+
+            {% endfor %}
+
+        </div>
+
+        <!-- Probability Analysis -->
+        <h2 class="section-title">Priority Probability Analysis</h2>
+
+        {% if probabilities %}
+
+            {% for label, probability in probabilities.items() %}
+
+            <div class="probability-card">
+
+                <div class="probability-header">
+                    <span>{{ label }}</span>
+
+                    <span class="probability-value">
+                        {{ "%.2f"|format(probability) }}%
+                    </span>
+                </div>
+
+                <div class="progress">
+                    <div class="progress-fill"
+                         style="width: {{ [[probability, 0]|max, 100]|min }}%;">
+                    </div>
+                </div>
+
+            </div>
+
+            {% endfor %}
+
+            <p class="note">
+                Probabilities are estimates produced by the trained
+                classifier and do not guarantee prediction correctness.
+            </p>
+
+        {% else %}
+
+            <p>No probability scores are available for this model.</p>
+
+        {% endif %}
+
+        <!-- Recommendation -->
+        <div class="recommendation">
+
+            <h3>💡 Recommended Next Step</h3>
+
+            <p>
+                {% if p in ['critical', 'p1', 'priority 1'] %}
+                    Escalate immediately to the responsible support team.
+                    Initiate urgent incident response and notify relevant
+                    stakeholders according to company policy.
+
+                {% elif p in ['high', 'p2', 'priority 2'] %}
+                    Assign the incident to the appropriate technical team.
+                    Investigate promptly and monitor the applicable SLA.
+
+                {% elif p in ['medium', 'moderate', 'p3', 'priority 3'] %}
+                    Assign the incident for timely investigation and
+                    monitor progress against the applicable SLA.
+
+                {% elif p in ['low', 'p4', 'priority 4'] %}
+                    Handle the incident through the standard support
+                    process and monitor it until resolution.
+
+                {% else %}
+                    Review the predicted priority with the responsible
+                    support team and follow your organization's
+                    incident management policy.
+                {% endif %}
+            </p>
+
+        </div>
+
+        <!-- Navigation -->
+        <div class="buttons">
+
+            <a href="{{ url_for('home') }}"
+               class="btn btn-primary">
+                + Predict Another Incident
+            </a>
+
+            <button type="button"
+                    class="btn btn-secondary"
+                    onclick="window.print()">
+                Print Result
+            </button>
+
+        </div>
+
+    </main>
+
+    <footer class="footer">
+        ITSM Analytics | Machine Learning Incident Management System
+    </footer>
+
+</div>
+
+</body>
+</html>
